@@ -42,11 +42,6 @@ local function run_lint(bufnr)
   local cmd = vim.tbl_flatten({config.cmd, filename})
   local output = vim.fn.system(cmd)
   
-  -- Display the output if not empty
-  if output ~= "" then
-    vim.notify(output, vim.log.levels.INFO)
-  end
-
   local diagnostics = parse_diagnostics(output)
   vim.diagnostic.set(ns_id, bufnr, diagnostics)
 end
@@ -60,8 +55,8 @@ end
 function M.setup(opts)
   config = vim.tbl_deep_extend("force", config, opts or {})
   
-  -- Create autocommands to run linting on text changes
-  vim.api.nvim_create_autocmd({"TextChanged", "TextChangedI"}, {
+  -- Create autocommands to run linting
+  vim.api.nvim_create_autocmd({"BufEnter", "InsertLeave", "BufWritePost"}, {
     pattern = "*.sh",
     callback = function(event)
       run_lint(event.buf)
