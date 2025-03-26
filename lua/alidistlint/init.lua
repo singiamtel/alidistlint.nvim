@@ -42,9 +42,9 @@ local function run_lint(bufnr)
   local cmd = vim.tbl_flatten({config.cmd, filename})
   local output = vim.fn.system(cmd)
   
-  if vim.v.shell_error ~= 0 then
-    vim.notify("Failed to run alidistlint: " .. output, vim.log.levels.ERROR)
-    return
+  -- Display the output if not empty
+  if output ~= "" then
+    vim.notify(output, vim.log.levels.INFO)
   end
 
   local diagnostics = parse_diagnostics(output)
